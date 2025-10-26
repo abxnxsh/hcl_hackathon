@@ -47,31 +47,34 @@ Responsibilities:
 3. Status Update → User Notification → Audit Log
 ```
 
-## Edge Case
-    Duplicate Registration
 
-        Same email → EMAIL_EXISTS
-        Same phone number → PHONE_EXISTS
+## Edge Cases & Error Handling
 
-    Invalid Data
+### Registration Issues
+- **Duplicate Email** → `EMAIL_EXISTS` (400)
+- **Duplicate Phone** → `PHONE_EXISTS` (400)
+- **Weak Password** → `VALIDATION_ERROR` (422)
+- **Underage User** (<18 years) → `UNDERAGE_USER` (422)
+- **Invalid Email Format** → `VALIDATION_ERROR` (422)
 
-        Underage user (<18 years) → UNDERAGE_USER
-        Weak password → VALIDATION_ERROR
-        Invalid email format → VALIDATION_ERROR
+### KYC Issues
+- **Duplicate KYC Submission** → `KYC_ALREADY_SUBMITTED` (400)
+- **Invalid Document Type** → `VALIDATION_ERROR` (422)
+- **Expired Document** → `DOCUMENT_EXPIRED` (422)
+- **Invalid Date Sequence** → `INVALID_DATE_RANGE` (422)
+- **Large File Size** → `FILE_TOO_LARGE` (400)
+- **Invalid File Type** → `INVALID_FILE_TYPE` (400)
 
-    System Issues
-
-        Database connection failure → INTERNAL_SERVER_ERROR
-        Rate limit exceeded → TOO_MANY_REQUESTS
-
+### System Issues
+- **Database Connection Failure** → `INTERNAL_SERVER_ERROR` (500)
+- **JWT Token Expired** → `TOKEN_EXPIRED` (401)
+- **Invalid Authorization** → `UNAUTHORIZED` (401)
+- **Missing Token** → `MISSING_AUTH_HEADER` (401)
 
 ## API Endpoints
 
----
-
-## 1. Register User
-
-**Endpoint:** `POST /auth/register`
+### 1. Register User
+**Endpoint:** `POST /api/v1/auth/register`
 
 **Request Body:**
 ```json
@@ -89,7 +92,6 @@ Responsibilities:
   "country": "US"
 }
 ```
-
 **Success Response**
 ```
 {
